@@ -33,35 +33,44 @@ void killProcess(string process) {
 }
 
 /**
- * Delete temporary files from a specified directory.
+ * Recursively delete files and directories within a specified path.
  *
- * @param path The directory path where temporary files are located
+ * @param pathToDelete The directory path to delete
  */
-void deleteTempFiles(const string& path) {
-    for (const auto& entry : directory_iterator(path)) {
-        if (is_regular_file(entry)) {
+void deletePathRecursively(const path& pathToDelete) {
+    if (exists(pathToDelete)) {
+        for (const directory_entry& entry : directory_iterator(pathToDelete)) {
             try {
-                remove(entry);
+                if (is_regular_file(entry)) {
+                    remove(entry);
 
-                cout << "Deleted a temp file " << entry << endl;
+                    cout << "Deleted a temp file: " << entry.path() << endl;
+                } else if (is_directory(entry)) {
+                    deletePathRecursively(entry.path());
+                }
             } catch (...) {
-                cout << "Failed to delete a temp file " << entry << endl;
+                cout << "Failed to delete: " << entry.path() << endl;
             }
         }
+
+        remove(pathToDelete);
     }
 }
 
 /**
- * Main function to kill processes and delete temporary files
+ * Main function. Nothing special
  */
 int main() {
+    const path tempPath = temp_directory_path();
+
     for (string process : processesToKill) {
         killProcess(process);
     }
 
     try {
-        const string path = temp_directory_path().string();
-        deleteTempFiles(path);
+        deletePathRecursively(tempPath);
+
+        cout << "Deleted temporary files and directories from: " << tempPath << endl;
     } catch (const filesystem_error& e) {
         cerr << "Error accessing the directory: " << e.what() << endl;
     }
