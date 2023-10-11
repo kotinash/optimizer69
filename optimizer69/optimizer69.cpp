@@ -5,6 +5,11 @@
 using namespace std;
 using namespace filesystem;
 
+#define tryIgnore(function) \
+        try {               \
+            function;       \
+        } catch (...) {}    \
+
 string processesToKill[15] = {
     "Salad.exe",
     "GoogleCrashHandler.exe",
@@ -37,16 +42,16 @@ void killProcess(string process) {
  *
  * @param pathToDelete The directory path to delete
  */
-void deletePathRecursively(const path& pathToDelete) {
+void deleteDirectory(const path& pathToDelete) {
     if (exists(pathToDelete)) {
         for (const directory_entry& entry : directory_iterator(pathToDelete)) {
             try {
                 if (is_regular_file(entry)) {
                     remove(entry);
 
-                    cout << "Deleted a temp file: " << entry.path() << endl;
+                    cout << "Deleted file: " << entry.path() << endl;
                 } else if (is_directory(entry)) {
-                    deletePathRecursively(entry.path());
+                    deleteDirectory(entry.path());
                 }
             } catch (...) {
                 cout << "Failed to delete: " << entry.path() << endl;
@@ -61,19 +66,17 @@ void deletePathRecursively(const path& pathToDelete) {
  * Main function. Nothing special
  */
 int main() {
+    cout << "This utility will purge your temp folder, recycle bin and clean up your ram. Starting in 5 seconds" << endl;
+    Sleep(5000);
+
     const path tempPath = temp_directory_path();
 
     for (string process : processesToKill) {
         killProcess(process);
     }
 
-    try {
-        deletePathRecursively(tempPath);
-
-        cout << "Deleted temporary files and directories from: " << tempPath << endl;
-    } catch (const filesystem_error& e) {
-        cerr << "Error accessing the directory: " << e.what() << endl;
-    }
+    tryIgnore(deleteDirectory(tempPath));
+    tryIgnore(deleteDirectory("C:\\$RECYCLE.BIN"));
 
     return 0;
 }
