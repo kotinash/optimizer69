@@ -5,7 +5,7 @@
 using namespace std;
 using namespace filesystem;
 
-string processesToKill[11] = {
+string processesToKill[15] = {
     "Salad.exe",
     "GoogleCrashHandler.exe",
     "GoogleCrashHandler64.exe",
