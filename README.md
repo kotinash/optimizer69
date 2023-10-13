@@ -1,6 +1,6 @@
 # optimizer69
 
-Purges temp files + recycle bin and cleans up your ram
+Purges temp files, prefetch logs, recycle bin and cleans up your ram
 
 ## How to use
 
