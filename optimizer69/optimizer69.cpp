@@ -60,6 +60,9 @@ void deleteDirectory(const path& pathToDelete) {
 
         remove(pathToDelete);
     }
+
+    // TODO: Remove this hack
+    tryIgnore(create_directories(pathToDelete));
 }
 
 /**
@@ -79,9 +82,7 @@ int main() {
     tryIgnore(deleteDirectory(tempPath));
     tryIgnore(deleteDirectory("C:\\Windows\\Temp"));
     tryIgnore(deleteDirectory("C:\\$RECYCLE.BIN"));
-    
     tryIgnore(deleteDirectory("C:\\Windows\\Prefetch"));
-    tryIgnore(create_directories("C:\\Windows\\Prefetch"));
 
     return 0;
 }
