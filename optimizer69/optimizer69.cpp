@@ -66,7 +66,7 @@ void deleteDirectory(const path& pathToDelete) {
  * Main function. Nothing special
  */
 int main() {
-    cout << "This utility will purge your temp folder, recycle bin and clean up your ram. Starting in 5 seconds" << endl;
+    cout << "This utility will purge your temp folder, prefetch logs, recycle bin and clean up your ram. Starting in 5 seconds" << endl;
 
     Sleep(5000);
 
@@ -77,7 +77,8 @@ int main() {
     const path tempPath = temp_directory_path();
 
     tryIgnore(deleteDirectory(tempPath));
-    tryIgnore(deleteDirectory("C;\\Windows\\Temp"));
+    tryIgnore(deleteDirectory("C:\\Windows\\Temp"));
+    tryIgnore(deleteDirectory("C:\\Windows\\Prefetch"));
     tryIgnore(deleteDirectory("C:\\$RECYCLE.BIN"));
 
     return 0;
